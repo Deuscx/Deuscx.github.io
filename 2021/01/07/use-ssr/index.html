@@ -1,0 +1,341 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>use_ssr | Deuscx</title><meta name="keywords" content="ssr"><meta name="author" content="Deuscx"><meta name="copyright" content="Deuscx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="自己的ssr使用经验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="use_ssr">
+<meta property="og:url" content="https://deuscx.github.io/2021/01/07/use-ssr/index.html">
+<meta property="og:site_name" content="Deuscx">
+<meta property="og:description" content="自己的ssr使用经验">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-01-07T04:30:43.000Z">
+<meta property="article:modified_time" content="2021-01-07T04:32:26.267Z">
+<meta property="article:author" content="Deuscx">
+<meta property="article:tag" content="ssr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://deuscx.github.io/2021/01/07/use-ssr/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.js" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"MID1FN7UYT","apiKey":"9ecd30a604f6a2f63e56fdbd35acb48f","indexName":"prod_NAME","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Deuscx","link":"链接: ","source":"来源: Deuscx","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false,
+  visibility: {
+    enable: true,
+    show_text: '(/≧▽≦/)咦！又好了！',
+    hide_text: '(●—●)喔哟，崩溃啦！'
+  }
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-01-07 12:32:26'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" data-lazy-src="https://avatars0.githubusercontent.com/u/48537979?s=400&amp;u=f4e9abba6621ebb796a8114f2fa2f2897aac7d90&amp;v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Deuscx</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">use_ssr</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-01-07T04:30:43.000Z" title="发表于 2021-01-07 12:30:43">2021-01-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-01-07T04:32:26.267Z" title="更新于 2021-01-07 12:32:26">2021-01-07</time></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Rss"><a href="#Rss" class="headerlink" title="Rss"></a>Rss</h1><ul>
+<li><p><a target="_blank" rel="noopener" href="https://diygod.me/ohmyrss/">我有特别的 RSS 使用技巧</a></p>
+</li>
+<li><p><input checked="" disabled="" type="checkbox">  简单 4 步，为你的个人博客配置 RSS 订阅</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/100086971">RSS订阅傻瓜式教程</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.runoob.com/rss/rss-tutorial.html">菜鸟教程 rss</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.rssboard.org/rss-specification">https://www.rssboard.org/rss-specification</a></p>
+</li>
+</ul>
+<p>RSS是一种用以聚合经常发布更新资料的网站讯息来源格式规范。</p>
+<p>RSS的英文原意是<code>RDF Site Summary</code>，资源描述框架站点摘要。后来通过逆向首字母略缩词变更为Really Simple Syndication，「<strong>简易咨询聚合</strong>」。</p>
+<p>它的副档名(又叫延伸档名或字尾名，就是平常说的扩展名)是.rss或者.xml，延伸自XML。</p>
+<h2 id="Feed"><a href="#Feed" class="headerlink" title="Feed"></a>Feed</h2><p>经常与RSS联系在一起的是<strong>Feed</strong>。</p>
+<p>Feed是为满足以某种形式持续得到自己更新的需求而提供的格式标准的信息出口。</p>
+<p>信息发布网站将网站全部或者部分信息整合到一个 RSS 文件中，这个文件就被称之为 Feed 。</p>
+<h2 id="自己常用的Rss链接"><a href="#自己常用的Rss链接" class="headerlink" title="自己常用的Rss链接"></a>自己常用的Rss链接</h2><ul>
+<li>阮一峰的网络日志  <a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/atom.xml">http://www.ruanyifeng.com/blog/atom.xml</a></li>
+<li>张鑫旭的个人主页 <a target="_blank" rel="noopener" href="https://www.zhangxinxu.com/wordpress/feed/">https://www.zhangxinxu.com/wordpress/feed/</a></li>
+</ul>
+<h2 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h2><p><a target="_blank" rel="noopener" href="https://www.runoob.com/rss/rss-tutorial.html">菜鸟教程 rss</a></p>
+<p>rss 具有 atom / rss 两种写法</p>
+<h3 id="atom"><a href="#atom" class="headerlink" title="atom"></a>atom</h3><p><a target="_blank" rel="noopener" href="http://www.atomenabled.org/developers/syndication/">文档</a></p>
+<p>以此为例： <a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/atom.xml">http://www.ruanyifeng.com/blog/atom.xml</a></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">feed</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.w3.org/2005/Atom&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>阮一峰的网络日志<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;alternate&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/html&quot;</span> <span class="attr">href</span>=<span class="string">&quot;http://www.ruanyifeng.com/blog/&quot;</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;self&quot;</span> <span class="attr">type</span>=<span class="string">&quot;application/atom+xml&quot;</span> <span class="attr">href</span>=<span class="string">&quot;http://www.ruanyifeng.com/blog/atom.xml&quot;</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">id</span>&gt;</span>tag:www.ruanyifeng.com,2010-04-11:/blog//1<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">updated</span>&gt;</span>2021-01-04T04:22:45Z<span class="tag">&lt;/<span class="name">updated</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">subtitle</span>&gt;</span>Ruan YiFeng&#x27;s Blog<span class="tag">&lt;/<span class="name">subtitle</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">generator</span> <span class="attr">uri</span>=<span class="string">&quot;http://www.sixapart.com/movabletype/&quot;</span>&gt;</span>Movable Type 5.2.2<span class="tag">&lt;/<span class="name">generator</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">entry</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>科技爱好者周刊（第 140 期）：印度人的工资是多少？<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;alternate&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text/html&quot;</span> <span class="attr">href</span>=<span class="string">&quot;http://www.ruanyifeng.com/blog/2020/12/weekly-issue-140.html&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>tag:www.ruanyifeng.com,2020:/blog//1.2229<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">published</span>&gt;</span>2020-12-31T00:25:12Z<span class="tag">&lt;/<span class="name">published</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">updated</span>&gt;</span>2021-01-04T04:22:45Z<span class="tag">&lt;/<span class="name">updated</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">summary</span>&gt;</span>这里记录每周值得分享的科技内容，周五发布。（ 本周由于元旦假期，提前到周四发布。）...<span class="tag">&lt;/<span class="name">summary</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">author</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">name</span>&gt;</span>阮一峰<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">uri</span>&gt;</span>http://www.ruanyifeng.com<span class="tag">&lt;/<span class="name">uri</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">author</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">category</span> <span class="attr">term</span>=<span class="string">&quot;Weekly&quot;</span> <span class="attr">scheme</span>=<span class="string">&quot;http://www.sixapart.com/ns/types#category&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">content</span> <span class="attr">type</span>=<span class="string">&quot;html&quot;</span> <span class="attr">xml:lang</span>=<span class="string">&quot;en&quot;</span> <span class="attr">xml:base</span>=<span class="string">&quot;http://www.ruanyifeng.com/blog/&quot;</span>&gt;</span></span><br><span class="line">      &lt;![CDATA[ &lt;p&gt;这里记录每周值得分享的科技内容，周五发布。（ 本周由于元旦假期，提前到周四发布。）&lt;/p&gt; ]]&gt;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">content</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">feed</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>feed指示当前的 rss feed</p>
+<p>必须的元素：</p>
+<ul>
+<li>id 使用唯一的URI标识</li>
+<li>title 通常与网站标题相同</li>
+<li>updated 最后一次被修改的时间。</li>
+</ul>
+<p>一个feed可以定义多个entry元素。entry元素：用于表示RSS feed 中的一篇文章</p>
+<ul>
+<li><code>&lt;title&gt;</code> - 定义项目的标题。（比如 科技爱好者周刊）</li>
+</ul>
+<p><code>&lt;category&gt;</code>  定义元素种类</p>
+<p><code>&lt;content&gt;</code> 表示具体内容</p>
+<ul>
+<li> <code>&lt;![CDATA[ ]]&gt;</code> 中的文本数据不会被解析。</li>
+</ul>
+<hr>
+<h3 id="rss"><a href="#rss" class="headerlink" title="rss"></a>rss</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">rss</span> <span class="attr">xmlns:atom</span>=<span class="string">&quot;http://www.w3.org/2005/Atom&quot;</span> <span class="attr">version</span>=<span class="string">&quot;2.0&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">channel</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span></span><br><span class="line">      &lt;![CDATA[ Epic 游戏限免 ]]&gt;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span>&gt;</span>https://www.epicgames.com/store/zh-CN/<span class="tag">&lt;/<span class="name">link</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">atom:link</span> <span class="attr">href</span>=<span class="string">&quot;http://rsshub.app/epicgames/freegames&quot;</span> <span class="attr">rel</span>=<span class="string">&quot;self&quot;</span> <span class="attr">type</span>=<span class="string">&quot;application/rss+xml&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span></span><br><span class="line">      &lt;![CDATA[</span><br><span class="line">Epic 游戏限免 - Made with love by RSSHub(https://github.com/DIYgod/RSSHub)</span><br><span class="line">]]&gt;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">generator</span>&gt;</span>RSSHub<span class="tag">&lt;/<span class="name">generator</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">webMaster</span>&gt;</span>i@diygod.me (DIYgod)<span class="tag">&lt;/<span class="name">webMaster</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">language</span>&gt;</span>zh-cn<span class="tag">&lt;/<span class="name">language</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">lastBuildDate</span>&gt;</span>Tue, 05 Jan 2021 02:11:48 GMT<span class="tag">&lt;/<span class="name">lastBuildDate</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ttl</span>&gt;</span>60<span class="tag">&lt;/<span class="name">ttl</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">title</span>&gt;</span></span><br><span class="line">        &lt;![CDATA[ Jurassic World Evolution ]]&gt;</span><br><span class="line">      <span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">description</span>&gt;</span></span><br><span class="line">        &lt;![CDATA[</span><br><span class="line">Jurassic World Evolution&lt;br&gt;&lt;img src=&quot;https://cdn1.epicgames.com/d5241c76f178492ea1540fce45616757/offer/EGS_HolidaySale2020_DoG_JurassicWorldEvolution_1920x1080_Teaser-R-1920x1080-26f66b9b2bc29ce9bf2b87abe2efbfab.jpg&quot; referrerpolicy=&quot;no-referrer&quot;&gt;</span><br><span class="line">]]&gt;</span><br><span class="line">      <span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">pubDate</span>&gt;</span>Thu, 31 Dec 2020 16:00:00 GMT<span class="tag">&lt;/<span class="name">pubDate</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">guid</span> <span class="attr">isPermaLink</span>=<span class="string">&quot;false&quot;</span>&gt;</span></span><br><span class="line">        https://www.epicgames.com/store/zh-CN/product/jurassic-world-evolution</span><br><span class="line">      <span class="tag">&lt;/<span class="name">guid</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">link</span>&gt;</span></span><br><span class="line">        https://www.epicgames.com/store/zh-CN/product/jurassic-world-evolution</span><br><span class="line">      <span class="tag">&lt;/<span class="name">link</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">channel</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">rss</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/rss/rss-tag-pubdate-item.html">pubDate</a> 定义此项目的最后发布日期。</li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/rss/rss-tag-title-link-description-item.html">description</a> 描述此项目。</li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/rss/rss-tag-guid.html">guid</a> 项目定义一个唯一的标识符。</li>
+</ul>
+<h2 id="推荐工具"><a href="#推荐工具" class="headerlink" title="推荐工具"></a>推荐工具</h2><p>windows:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/getstream/winds">https://github.com/getstream/winds</a></li>
+</ul>
+<p>feed资源</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.rsshub.app/">https://docs.rsshub.app/</a> </li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Deuscx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://deuscx.github.io/2021/01/07/use-ssr/">https://deuscx.github.io/2021/01/07/use-ssr/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://deuscx.github.io" target="_blank">Deuscx</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ssr/">ssr</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/11/25/hello-world/"><img class="next-cover" data-lazy-src="https://w.wallhaven.cc/full/ox/wallhaven-oxzk8m.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Hello World</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="lv-container" data-id="city" data-uid="MTAyMC80NTE2NC8yMTY4MQ=="></div></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" data-lazy-src="https://avatars0.githubusercontent.com/u/48537979?s=400&amp;u=f4e9abba6621ebb796a8114f2fa2f2897aac7d90&amp;v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Deuscx</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Deuscx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><span class="links-of-author-item scaleup"><a class="social-icon" href="https://twitter.com/Deuscx" target="_blank" title="Twitter"> <i class="fab fa-twitter" style="color: #2FB0EC"><span>Deuscx</span></i></a></span><span class="links-of-author-item scaleup"><a class="social-icon" href="https://space.bilibili.com/19510750" target="_blank" title="bilibili"> <i style="fill: #20B0E3;"><svg t="1581180571735" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1122"><path d="M813.2864 234.5216h-53.0176l46.3872-46.3872c19.8912-19.8912 19.8912-59.648 0-79.5136s-59.648-19.8912-79.5136 0l-132.5312 125.9008h-159.0272l-132.5312-125.9008c-19.8912-19.8912-59.648-19.8912-79.5136 0s-19.8912 59.648 0 79.5136l46.3872 46.3872H216.9088c-92.7744 0-165.6576 72.8832-165.6576 165.6576v357.8112c0 99.4048 72.8832 172.288 165.6576 172.288h589.7216c92.7744 0 165.6576-72.8832 165.6576-165.6576V400.1792c6.6304-92.7744-66.2528-165.6576-159.0272-165.6576z m46.3872 523.4688a59.392 59.392 0 0 1-59.648 59.648H223.5392a59.392 59.392 0 0 1-59.648-59.648V406.8096a59.392 59.392 0 0 1 59.648-59.648h576.4864a59.392 59.392 0 0 1 59.648 59.648v351.1808z m-516.864-291.5328a59.392 59.392 0 0 0-59.648 59.648v59.648c0 33.1264 26.496 59.648 59.648 59.648s59.648-26.496 59.648-59.648v-59.648a59.392 59.392 0 0 0-59.648-59.648z m344.576 0a59.392 59.392 0 0 0-59.648 59.648v59.648c0 33.1264 26.496 59.648 59.648 59.648s59.648-26.496 59.648-59.648v-59.648a59.392 59.392 0 0 0-59.648-59.648z" p-id="1123"></path></svg><span>Deuscx</span></i></a></span><span class="links-of-author-item scaleup"><a class="social-icon" href="https://github.com/Deuscx" target="_blank" title="GitHub"> <i class="fab fa-github" style="color: #191717"><span>Deuscx</span></i></a></span></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Rss"><span class="toc-number">1.</span> <span class="toc-text">Rss</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Feed"><span class="toc-number">1.1.</span> <span class="toc-text">Feed</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%B7%B1%E5%B8%B8%E7%94%A8%E7%9A%84Rss%E9%93%BE%E6%8E%A5"><span class="toc-number">1.2.</span> <span class="toc-text">自己常用的Rss链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%8F%91"><span class="toc-number">1.3.</span> <span class="toc-text">开发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#atom"><span class="toc-number">1.3.1.</span> <span class="toc-text">atom</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rss"><span class="toc-number">1.3.2.</span> <span class="toc-text">rss</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A8%E8%8D%90%E5%B7%A5%E5%85%B7"><span class="toc-number">1.4.</span> <span class="toc-text">推荐工具</span></a></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/01/07/use-ssr/" title="use_ssr"><img data-lazy-src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="use_ssr"/></a><div class="content"><a class="title" href="/2021/01/07/use-ssr/" title="use_ssr">use_ssr</a><time datetime="2021-01-07T04:30:43.000Z" title="发表于 2021-01-07 12:30:43">2021-01-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/11/25/hello-world/" title="Hello World"><img data-lazy-src="https://w.wallhaven.cc/full/ox/wallhaven-oxzk8m.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2020/11/25/hello-world/" title="Hello World">Hello World</a><time datetime="2020-11-25T11:11:53.203Z" title="发表于 2020-11-25 19:11:53">2020-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/02/22/WebSocket%E4%BB%A5%E5%8F%8AsocketIO%E7%9A%84%E4%BD%BF%E7%94%A8/" title="WebSocket以及socketIO的使用"><img data-lazy-src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="WebSocket以及socketIO的使用"/></a><div class="content"><a class="title" href="/2020/02/22/WebSocket%E4%BB%A5%E5%8F%8AsocketIO%E7%9A%84%E4%BD%BF%E7%94%A8/" title="WebSocket以及socketIO的使用">WebSocket以及socketIO的使用</a><time datetime="2020-02-22T11:27:25.000Z" title="发表于 2020-02-22 19:27:25">2020-02-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/02/21/Node%E4%B8%AD%E4%BD%BF%E7%94%A8MongoDB/" title="Node中使用MongoDB"><img data-lazy-src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Node中使用MongoDB"/></a><div class="content"><a class="title" href="/2020/02/21/Node%E4%B8%AD%E4%BD%BF%E7%94%A8MongoDB/" title="Node中使用MongoDB">Node中使用MongoDB</a><time datetime="2020-02-20T23:37:18.000Z" title="发表于 2020-02-21 07:37:18">2020-02-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/01/31/H5Demo-password-generator/" title="H5Demo_password_generator"><img data-lazy-src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="H5Demo_password_generator"/></a><div class="content"><a class="title" href="/2020/01/31/H5Demo-password-generator/" title="H5Demo_password_generator">H5Demo_password_generator</a><time datetime="2020-01-31T09:10:22.000Z" title="发表于 2020-01-31 17:10:22">2020-01-31</time></div></div></div></div></div></div></div></main><div id="aplayer-fixed"></div><footer id="footer" style="background-image: url(https://w.wallhaven.cc/full/rd/wallhaven-rd32x7.png)"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By Deuscx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, Deuscx.</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="algolia-search"><div class="search-dialog"><div class="search-dialog__title" id="algolia-search-title">Algolia</div><div id="algolia-input-panel"><div id="algolia-search-input"></div></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-stats"></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="//waust.at/s.js" aync>let _wau = _wau || []; _wau.push(["small", "7h4b278bao", "dsx"]);</script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="/js/search/algolia.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>function loadLivere () {
+  if (typeof LivereTower === 'object') {
+    window.LivereTower.init()
+  }
+  else {
+    (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+    })(document, 'script');
+  }
+}
+
+if ('Livere' === 'Livere' || !false) {
+  if (false) btf.loadComment(document.getElementById('lv-container'), loadLivere)
+  else loadLivere()
+}
+else {
+  function loadOtherComment () {
+    loadLivere()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config_change',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (true) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  if (typeof gtag === 'function') {
+    gtag('config', '', {'page_path': window.location.pathname});
+  }
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+
+document.addEventListener('pjax:send', function () {
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})</script></div></body></html>
